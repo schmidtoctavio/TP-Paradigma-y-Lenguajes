@@ -1,0 +1,58 @@
+(defun existe (estado conjFinales)
+  (cond
+   ((null conjFinales) nil)
+   ((= estado (first conjFinales)) T)
+   (T (existe estado (rest conjFinales)))
+  )
+)
+;esta funcion lo que hace es fijarse si el estado que le paso como parametro
+;es un estado final que tambien lo paso por parametro al conjunto"Lista"
+
+(defun extraer (id sublista) 
+  (cond
+    ((= id 0) (first sublista))
+    (T (extraer (- id 1) (rest sublista)))
+   )
+)
+;esta funcion lo que hace es que como parametro pasamos una posicion y una lista
+;te va a devolver el elemento que se encuentre en esa posicion
+
+(defun reconocerCadena (cadena_ing alfabeto estadoI estadoF transicion)
+  (cond
+   ((null cadena_ing) nil)
+   (t (existe estadoF (last (crearAutomata cadena_ing alfabeto estadoI estadoF transicion))))
+   )
+)
+ 
+(defun crearAutomata (cadena_ing alfabeto estadoI estadoF transicion)
+  (cond
+   ((null alfabeto) nil)
+   ((null estadoF) nil)
+   ((null cadena_ing) nil)
+   (T  (cons (setq estadoI (sigEstado transicion estadoI (first cadena_ing))) (crearAutomata (rest cadena_ing) alfabeto estadoI estadoF transicion)))
+   )
+) 
+;setq: asigna valores a una variable 
+ 
+(defun OpCase (Estado transicion)
+  (cond 
+   ((null transicion) NIL) 
+    ((eq (first (first transicion)) Estado) (cons (first transicion) (OpCase Estado (rest transicion))))
+    (T (Opcase Estado (rest transicion))))
+)
+
+;cons: inserta un nuevo elemento en la primera posicion de una lista
+;eq Se utiliza eq para saber si dos átomos son iguales, independientemente de la referencia.Sintaxis (eq X Y)
+
+
+(defun sigEstado(transicion estado caracter)
+  (cond
+   ((null estado) nil)
+   ((null (OpCase transicion estado)) nil)
+   ((eq (second (first (OpCase transicion estado))) caracter) (third (first (OpCase transicion estado))))
+   (T (sigEstado (rest (OpCase transicion estado)) estado caracter))
+   )
+)
+;first list => primer object
+;second list => segundo object
+;third list => tercer object
